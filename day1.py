@@ -4,6 +4,7 @@ from aocd.models import Puzzle
 Remember to add AOC_SESSION as an environment variable. It is a cookie from AOC website called session.
 """
 
+
 def get_puzzle():
     puzzle = Puzzle(year=2022, day=1)
     data = puzzle.input_data
@@ -24,7 +25,6 @@ def part_2():
     for i in range(3):
         calories += max(data)
         data.remove(max(data))
-
     return calories
 
 
