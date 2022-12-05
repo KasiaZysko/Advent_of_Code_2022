@@ -1,7 +1,7 @@
 from aocd.models import Puzzle
 
 """
-Remember to add AOC_SESSION as an environment variable. It is a cookie from AOC website called session.
+Remember to add AOC_SESSION as an environment variable. It is a cookie from AOC website called session..
 """
 
 
