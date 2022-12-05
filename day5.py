@@ -36,9 +36,9 @@ def part_1():
 def part_2():
     container_dict, moves = get_puzzle()
     for move in moves:
-        lenght = len(container_dict[move[1]])
-        moved_item = container_dict[move[1]][lenght - move[0]:]
-        del container_dict[move[1]][lenght - move[0]:]
+        length = len(container_dict[move[1]])
+        moved_item = container_dict[move[1]][length - move[0]:]
+        del container_dict[move[1]][length - move[0]:]
         container_dict[move[2]].extend(moved_item)
 
     return "".join([container_dict[i][-1] for i in range(1, 10)])
