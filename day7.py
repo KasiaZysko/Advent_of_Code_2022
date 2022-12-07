@@ -42,7 +42,7 @@ def part_2():
     required_space = 30000000
     dir_tree = dir_collection()
     space_to_del = required_space - (total_space - dir_tree["/"])
-    return space_to_del + min(i - space_to_del for i in dir_tree.values() if i - space_to_del >= 0)
+    return min(i for i in dir_tree.values() if i - space_to_del >= 0)
 
 
 print(f"Answer for part 1 is {part_1()}")
