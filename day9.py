@@ -1,5 +1,3 @@
-from math import sqrt
-
 from aocd.models import Puzzle
 
 """
