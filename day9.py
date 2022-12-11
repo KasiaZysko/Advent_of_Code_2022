@@ -13,14 +13,14 @@ def get_puzzle():
 
 
 def move_tail(head: list[int], tail: list[int]) -> None:
-    diff = [x - y for x, y in zip(head, tail)]
-    if abs(diff[0]) > 1 or abs(diff[1]) > 1:
-        tail[:] = [n + (1 if diff_n >= 1 else -1 if diff_n <= -1 else 0) for n, diff_n in zip(tail, diff)]
+    distance_diff = [x - y for x, y in zip(head, tail)]
+    if abs(distance_diff[0]) > 1 or abs(distance_diff[1]) > 1:
+        tail[:] = [n + (1 if diff_n >= 1 else -1 if diff_n <= -1 else 0) for n, diff_n in zip(tail, distance_diff)]
 
 
 def part_1():
     data = get_puzzle()
-    tail_points = set()
+    visited_by_tail = set()
     directions = {"R": (1, 0), "L": (-1, 0), "U": (0, 1), "D": (0, -1)}
     head = [0, 0]
     tail = [0, 0]
@@ -28,15 +28,15 @@ def part_1():
         for i in range(amount):
             head = [x + y for x, y in zip(head, directions[direction])]
             move_tail(head, tail)
-            tail_points.add(tuple(tail))
+            visited_by_tail.add(tuple(tail))
 
-    return len(tail_points)
+    return len(visited_by_tail)
 
 
 def part_2():
     data = get_puzzle()
-    tail_visited = set()
-    tail_parts = [[0, 0] for _ in range(9)]
+    visited_by_tail = set()
+    tail_parts = list([0, 0] for i in range(9))
     directions = {"R": (1, 0), "L": (-1, 0), "U": (0, 1), "D": (0, -1)}
     head = [0, 0]
     for direction, amount in data:
@@ -45,8 +45,8 @@ def part_2():
             for j in range(len(tail_parts)):
                 move_tail(head if j == 0 else tail_parts[j - 1], tail_parts[j])
                 if j == 8:
-                    tail_visited.add(tuple(tail_parts[j]))
-    return len(tail_visited)
+                    visited_by_tail.add(tuple(tail_parts[j]))
+    return len(visited_by_tail)
 
 
 print(f"Answer for part 1 is {part_1()}")
