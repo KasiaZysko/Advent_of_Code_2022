@@ -60,4 +60,4 @@ def part_2():
 
 
 print(f"Answer for part 1 is {part_1()}")
-print(f"Answer for part 2 is : \n {part_2()}")
+print(f"Answer for part 2 is {part_2()}")
