@@ -1,5 +1,5 @@
 import re
-import operator
+from math import prod
 from aocd.models import Puzzle
 
 """
@@ -14,50 +14,41 @@ def get_puzzle():
     return data
 
 
-def create_monkey_list():
-    data = get_puzzle()
-    monkey_dictionary = {}
-    for x in data:
-        monkey_number = int(x[0].replace('Monkey ', '').replace(':', ""))
-        item_list = [int(z) for z in re.findall(r'\d+', x[1])]
-        operation_sign = x[2].replace('Operation: new = old ', '').strip().split()
-        division = int(re.findall(r'\d+', x[3])[0])
-        division_true = int(re.findall(r'\d+', x[4])[0])
-        division_false = int(re.findall(r'\d+', x[5])[0])
-        monkey_dictionary[monkey_number] = {'items': item_list, 'operation': operation_sign,
-                                            'division': [division, division_true, division_false]}
-    return monkey_dictionary
+class Monkey:
+    def __init__(self, monkey_list):
+        self.monkey_number = int(re.findall(r'\d+', monkey_list[0])[0])
+        self.item_list = [int(z) for z in re.findall(r'\d+', monkey_list[1])]
+        self.op, factor = monkey_list[2].replace('Operation: new = old ', '').strip().split()
+        self.factor = int(factor) if factor!= 'old' else 'old'
+        self.div = int(re.findall(r'\d+', monkey_list[3])[0])
+        self.div_true = int(re.findall(r'\d+', monkey_list[4])[0])
+        self.div_false = int(re.findall(r'\d+', monkey_list[5])[0])
+        self.c = 0
+
+    @staticmethod
+    def operands(oper, num1, num2, mod):
+        ops = {'+': num1 + num2, '*': num1 * num2}
+        return ops[oper] % mod
+
+    def process(self, mk, mod):
+        while len(self.item_list) > 0:
+            self.c += + 1
+            i = self.item_list.pop(0)
+            n = i if self.factor == 'old' else self.factor
+            i = self.operands(self.op, i, n, mod)
+            target = self.div_true if i % self.div == 0 else self.div_false
+            mk[target].item_list.append(i)
 
 
-def operands(oper, num1, num2):
-    ops = {'+': operator.add, '*': operator.mul}
-    return ops[oper](num1, num2)
+def monkey_game(rounds):
+    monkey_list = get_puzzle()
+    monkeys = [Monkey(m) for m in monkey_list]
+    mod = prod([m.div for m in monkeys])
+    for i in range(rounds):
+        for m in monkeys:
+            m.process(monkeys, mod)
+    return prod(sorted([m.c for m in monkeys])[-2:])
 
 
-def part_1():
-    data_dict = create_monkey_list()
-    value_of = [0 for x in range(8)]
-
-    for i in range(20):
-        for key in data_dict:
-            for item in data_dict[key]['items']:
-                value_of[key] = value_of[key] + 1
-                operation = int(data_dict[key]['operation'][1]) if data_dict[key]['operation'][1] != 'old' else item
-                opp = operands(data_dict[key]['operation'][0], item, operation)
-                new_worry_level = opp // 3
-                if new_worry_level % data_dict[key]['division'][0] == 0:
-                    new_monkey = data_dict[key]['division'][1]
-                else:
-                    new_monkey = data_dict[key]['division'][2]
-                data_dict[new_monkey]['items'].append(new_worry_level)
-            data_dict[key]['items'] = []
-
-    return sorted(value_of)[::-1][0] * sorted(value_of)[::-1][1]
-
-
-def part_2():
-    pass
-
-
-print(f"Answer for part 1 is {part_1()}")
-print(f"Answer for part 2 is {part_2()}")
+print(f"Answer for part 1 is {monkey_game(20)}")
+print(f"Answer for part 2 is {monkey_game(10000)}")
